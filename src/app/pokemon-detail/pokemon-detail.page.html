@@ -1,0 +1,88 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Pokemon Details</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Pokemon Details</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <section class="content-wrapper">
+    @if (isLoading()) {
+      <div class="state-message">
+        <ion-spinner name="crescent"></ion-spinner>
+        <p>Loading Pokemon details...</p>
+      </div>
+    } @else if (errorMessage()) {
+      <ion-text color="danger">
+        <p class="state-message">{{ errorMessage() }}</p>
+      </ion-text>
+    } @else if (pokemon(); as selectedPokemon) {
+      <ion-card class="hero-card">
+        <ion-card-content>
+          <ion-img [src]="selectedPokemon.image" [alt]="selectedPokemon.name"></ion-img>
+          <p class="pokemon-id">#{{ selectedPokemon.id }}</p>
+          <h1>{{ selectedPokemon.name }}</h1>
+
+          <div class="type-list">
+            @for (type of selectedPokemon.types; track type) {
+              <ion-badge>{{ type }}</ion-badge>
+            }
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <ion-list inset="true">
+        <ion-item>
+          <ion-label>Height</ion-label>
+          <ion-text slot="end">{{ selectedPokemon.height }}</ion-text>
+        </ion-item>
+        <ion-item>
+          <ion-label>Weight</ion-label>
+          <ion-text slot="end">{{ selectedPokemon.weight }}</ion-text>
+        </ion-item>
+        <ion-item>
+          <ion-label>Base experience</ion-label>
+          <ion-text slot="end">{{ selectedPokemon.baseExperience }}</ion-text>
+        </ion-item>
+      </ion-list>
+
+      <ion-card>
+        <ion-card-content>
+          <h2>Abilities</h2>
+          <div class="chip-list">
+            @for (ability of selectedPokemon.abilities; track ability) {
+              <ion-badge color="medium">{{ ability }}</ion-badge>
+            }
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <ion-list inset="true">
+        <ion-item>
+          <ion-label>HP</ion-label>
+          <ion-text slot="end">{{ selectedPokemon.hp }}</ion-text>
+        </ion-item>
+        <ion-item>
+          <ion-label>Attack</ion-label>
+          <ion-text slot="end">{{ selectedPokemon.attack }}</ion-text>
+        </ion-item>
+        <ion-item>
+          <ion-label>Defense</ion-label>
+          <ion-text slot="end">{{ selectedPokemon.defense }}</ion-text>
+        </ion-item>
+        <ion-item>
+          <ion-label>Speed</ion-label>
+          <ion-text slot="end">{{ selectedPokemon.speed }}</ion-text>
+        </ion-item>
+      </ion-list>
+    }
+  </section>
+</ion-content>

@@ -24,7 +24,7 @@
     } @else {
       <div class="pokemon-list">
         @for (pokemon of pokemons(); track pokemon.id) {
-          <ion-card class="pokemon-card">
+          <ion-card class="pokemon-card" [routerLink]="['/pokemon', pokemon.id]" button="true">
             <ion-card-content>
               <ion-img [src]="pokemon.image" [alt]="pokemon.name"></ion-img>
               <h2>{{ pokemon.name }}</h2>

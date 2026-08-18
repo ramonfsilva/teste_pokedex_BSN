@@ -1,0 +1,54 @@
+.content-wrapper {
+  padding: 16px;
+}
+
+.state-message {
+  display: grid;
+  gap: 12px;
+  justify-items: center;
+  margin-top: 48px;
+  text-align: center;
+}
+
+.hero-card {
+  margin: 0 0 16px;
+  text-align: center;
+
+  ion-img {
+    width: 144px;
+    height: 144px;
+    margin: 0 auto;
+  }
+
+  h1 {
+    margin: 4px 0 12px;
+    font-size: 1.6rem;
+    font-weight: 800;
+    text-transform: capitalize;
+  }
+}
+
+.pokemon-id {
+  margin: 8px 0 0;
+  color: var(--ion-color-medium);
+  font-weight: 700;
+}
+
+.type-list,
+.chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  text-transform: capitalize;
+}
+
+ion-card:not(.hero-card) {
+  margin: 16px 0;
+
+  h2 {
+    margin: 0 0 12px;
+    font-size: 1.1rem;
+    font-weight: 700;
+  }
+}

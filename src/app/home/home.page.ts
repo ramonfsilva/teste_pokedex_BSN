@@ -1,4 +1,5 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import {
   IonCard,
   IonCardContent,
@@ -28,6 +29,7 @@ import { PokemonService } from '../services/pokemon.service';
     IonText,
     IonTitle,
     IonToolbar,
+    RouterLink,
   ],
 })
 export class HomePage implements OnInit {
