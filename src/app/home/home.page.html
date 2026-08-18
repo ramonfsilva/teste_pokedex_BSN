@@ -1,0 +1,37 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Pokedex</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Pokedex</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <section class="content-wrapper">
+    @if (isLoading()) {
+      <div class="state-message">
+        <ion-spinner name="crescent"></ion-spinner>
+        <p>Loading Pokemon...</p>
+      </div>
+    } @else if (errorMessage()) {
+      <ion-text color="danger">
+        <p class="state-message">{{ errorMessage() }}</p>
+      </ion-text>
+    } @else {
+      <div class="pokemon-list">
+        @for (pokemon of pokemons(); track pokemon.id) {
+          <ion-card class="pokemon-card">
+            <ion-card-content>
+              <ion-img [src]="pokemon.image" [alt]="pokemon.name"></ion-img>
+              <h2>{{ pokemon.name }}</h2>
+            </ion-card-content>
+          </ion-card>
+        }
+      </div>
+    }
+  </section>
+</ion-content>
