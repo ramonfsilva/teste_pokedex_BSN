@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import {
   IonCard,
@@ -6,6 +6,9 @@ import {
   IonContent,
   IonHeader,
   IonImg,
+  IonInfiniteScroll,
+  IonInfiniteScrollContent,
+  InfiniteScrollCustomEvent,
   IonSpinner,
   IonText,
   IonTitle,
@@ -25,6 +28,8 @@ import { PokemonService } from '../services/pokemon.service';
     IonContent,
     IonHeader,
     IonImg,
+    IonInfiniteScroll,
+    IonInfiniteScrollContent,
     IonSpinner,
     IonText,
     IonTitle,
@@ -36,10 +41,13 @@ export class HomePage implements OnInit {
   protected readonly pokemons = signal<Pokemon[]>([]);
   protected readonly isLoading = signal(true);
   protected readonly errorMessage = signal<string | null>(null);
+  protected readonly totalPokemon = signal(0);
+  protected readonly isLoadingMore = signal(false);
+  protected readonly hasMorePokemon = computed(() => this.pokemons().length < this.totalPokemon());
 
   private readonly pokemonService = inject(PokemonService);
   private readonly pageSize = 20;
-  private readonly offset = 0;
+  private readonly currentOffset = signal(0);
 
   ngOnInit(): void {
     this.loadPokemons();
@@ -49,14 +57,41 @@ export class HomePage implements OnInit {
     this.isLoading.set(true);
     this.errorMessage.set(null);
 
-    this.pokemonService.getPokemons(this.pageSize, this.offset).subscribe({
-      next: (pokemons) => {
-        this.pokemons.set(pokemons);
+    this.pokemonService.getPokemons(this.pageSize, 0).subscribe({
+      next: (pokemonPage) => {
+        this.pokemons.set(pokemonPage.results);
+        this.totalPokemon.set(pokemonPage.count);
+        this.currentOffset.set(pokemonPage.results.length);
         this.isLoading.set(false);
       },
       error: () => {
         this.errorMessage.set('Unable to load Pokemon. Please try again later.');
         this.isLoading.set(false);
+      },
+    });
+  }
+
+  protected loadMorePokemons(event: InfiniteScrollCustomEvent): void {
+    if (this.isLoadingMore() || !this.hasMorePokemon()) {
+      event.target.complete();
+      return;
+    }
+
+    this.isLoadingMore.set(true);
+    this.errorMessage.set(null);
+
+    this.pokemonService.getPokemons(this.pageSize, this.currentOffset()).subscribe({
+      next: (pokemonPage) => {
+        this.pokemons.update((current) => [...current, ...pokemonPage.results]);
+        this.totalPokemon.set(pokemonPage.count);
+        this.currentOffset.update((offset) => offset + pokemonPage.results.length);
+        this.isLoadingMore.set(false);
+        event.target.complete();
+      },
+      error: () => {
+        this.errorMessage.set('Unable to load more Pokemon. Please try again later.');
+        this.isLoadingMore.set(false);
+        event.target.complete();
       },
     });
   }

@@ -4,7 +4,7 @@ import { map, Observable } from 'rxjs';
 
 import { PokemonDetail, PokemonDetailResponse, PokemonDetailStatResponse } from '../models/pokemon-detail.model';
 import { PokemonListItemResponse, PokemonListResponse } from '../models/pokemon-list-response.model';
-import { Pokemon } from '../models/pokemon.model';
+import { Pokemon, PokemonPage } from '../models/pokemon.model';
 
 @Injectable({
   providedIn: 'root',
@@ -14,13 +14,16 @@ export class PokemonService {
   private readonly apiUrl = 'https://pokeapi.co/api/v2';
   private readonly spriteUrl = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon';
 
-  getPokemons(limit: number, offset: number): Observable<Pokemon[]> {
+  getPokemons(limit: number, offset: number): Observable<PokemonPage> {
     const params = new HttpParams()
       .set('limit', limit)
       .set('offset', offset);
 
     return this.http.get<PokemonListResponse>(`${this.apiUrl}/pokemon`, { params }).pipe(
-      map((response) => response.results.map((pokemon) => this.mapPokemon(pokemon))),
+      map((response) => ({
+        count: response.count,
+        results: response.results.map((pokemon) => this.mapPokemon(pokemon)),
+      })),
     );
   }
 

@@ -17,11 +17,13 @@
         <ion-spinner name="crescent"></ion-spinner>
         <p>Loading Pokemon...</p>
       </div>
-    } @else if (errorMessage()) {
-      <ion-text color="danger">
-        <p class="state-message">{{ errorMessage() }}</p>
-      </ion-text>
     } @else {
+      @if (errorMessage()) {
+        <ion-text color="danger">
+          <p class="state-message">{{ errorMessage() }}</p>
+        </ion-text>
+      }
+
       <div class="pokemon-list">
         @for (pokemon of pokemons(); track pokemon.id) {
           <ion-card class="pokemon-card" [routerLink]="['/pokemon', pokemon.id]" button="true">
@@ -32,6 +34,11 @@
           </ion-card>
         }
       </div>
+
+      <ion-infinite-scroll threshold="100px" [disabled]="!hasMorePokemon()" (ionInfinite)="loadMorePokemons($event)">
+        <ion-infinite-scroll-content loadingSpinner="crescent" loadingText="Loading more Pokemon...">
+        </ion-infinite-scroll-content>
+      </ion-infinite-scroll>
     }
   </section>
 </ion-content>
