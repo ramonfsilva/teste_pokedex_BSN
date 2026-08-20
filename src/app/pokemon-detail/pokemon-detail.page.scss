@@ -21,7 +21,7 @@
   }
 
   h1 {
-    margin: 4px 0 12px;
+    margin: 0;
     font-size: 1.6rem;
     font-weight: 800;
     text-transform: capitalize;
@@ -41,6 +41,14 @@
   justify-content: center;
   gap: 8px;
   text-transform: capitalize;
+}
+
+.title-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin: 4px 0 12px;
 }
 
 ion-card:not(.hero-card) {

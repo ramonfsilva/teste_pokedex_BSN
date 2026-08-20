@@ -1,10 +1,12 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import {
+  IonButton,
   IonCard,
   IonCardContent,
   IonContent,
   IonHeader,
+  IonIcon,
   IonImg,
   IonInfiniteScroll,
   IonInfiniteScrollContent,
@@ -16,6 +18,7 @@ import {
 } from '@ionic/angular/standalone';
 
 import { Pokemon } from '../models/pokemon.model';
+import { FavoritesService } from '../services/favorites.service';
 import { PokemonService } from '../services/pokemon.service';
 
 @Component({
@@ -23,10 +26,12 @@ import { PokemonService } from '../services/pokemon.service';
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
   imports: [
+    IonButton,
     IonCard,
     IonCardContent,
     IonContent,
     IonHeader,
+    IonIcon,
     IonImg,
     IonInfiniteScroll,
     IonInfiniteScrollContent,
@@ -46,6 +51,7 @@ export class HomePage implements OnInit {
   protected readonly hasMorePokemon = computed(() => this.pokemons().length < this.totalPokemon());
 
   private readonly pokemonService = inject(PokemonService);
+  protected readonly favoritesService = inject(FavoritesService);
   private readonly pageSize = 20;
   private readonly currentOffset = signal(0);
 
@@ -94,5 +100,11 @@ export class HomePage implements OnInit {
         event.target.complete();
       },
     });
+  }
+
+  protected toggleFavorite(event: Event, pokemonId: number): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.favoritesService.toggle(pokemonId);
   }
 }

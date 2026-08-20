@@ -31,9 +31,14 @@
   }
 
   h2 {
+    flex: 1;
     margin: 0;
     font-size: 1.1rem;
     font-weight: 700;
     text-transform: capitalize;
+  }
+
+  .favorite-button {
+    margin-left: auto;
   }
 }

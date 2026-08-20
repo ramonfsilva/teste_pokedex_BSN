@@ -3,11 +3,13 @@ import { ActivatedRoute } from '@angular/router';
 import {
   IonBackButton,
   IonBadge,
+  IonButton,
   IonButtons,
   IonCard,
   IonCardContent,
   IonContent,
   IonHeader,
+  IonIcon,
   IonImg,
   IonItem,
   IonLabel,
@@ -19,6 +21,7 @@ import {
 } from '@ionic/angular/standalone';
 
 import { PokemonDetail } from '../models/pokemon-detail.model';
+import { FavoritesService } from '../services/favorites.service';
 import { PokemonService } from '../services/pokemon.service';
 
 @Component({
@@ -28,11 +31,13 @@ import { PokemonService } from '../services/pokemon.service';
   imports: [
     IonBackButton,
     IonBadge,
+    IonButton,
     IonButtons,
     IonCard,
     IonCardContent,
     IonContent,
     IonHeader,
+    IonIcon,
     IonImg,
     IonItem,
     IonLabel,
@@ -50,6 +55,7 @@ export class PokemonDetailPage implements OnInit {
 
   private readonly route = inject(ActivatedRoute);
   private readonly pokemonService = inject(PokemonService);
+  protected readonly favoritesService = inject(FavoritesService);
 
   ngOnInit(): void {
     const id = this.getPokemonIdFromRoute();
@@ -84,5 +90,9 @@ export class PokemonDetailPage implements OnInit {
         this.isLoading.set(false);
       },
     });
+  }
+
+  protected toggleFavorite(id: number): void {
+    this.favoritesService.toggle(id);
   }
 }

@@ -29,7 +29,21 @@
         <ion-card-content>
           <ion-img [src]="selectedPokemon.image" [alt]="selectedPokemon.name"></ion-img>
           <p class="pokemon-id">#{{ selectedPokemon.id }}</p>
-          <h1>{{ selectedPokemon.name }}</h1>
+          <div class="title-row">
+            <h1>{{ selectedPokemon.name }}</h1>
+            <ion-button
+              fill="clear"
+              size="small"
+              [attr.aria-label]="favoritesService.isFavorite(selectedPokemon.id) ? 'Remove from favorites' : 'Add to favorites'"
+              (click)="toggleFavorite(selectedPokemon.id)"
+            >
+              <ion-icon
+                slot="icon-only"
+                [name]="favoritesService.isFavorite(selectedPokemon.id) ? 'heart' : 'heart-outline'"
+                [color]="favoritesService.isFavorite(selectedPokemon.id) ? 'danger' : 'medium'"
+              ></ion-icon>
+            </ion-button>
+          </div>
 
           <div class="type-list">
             @for (type of selectedPokemon.types; track type) {
