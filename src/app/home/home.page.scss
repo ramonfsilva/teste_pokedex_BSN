@@ -1,3 +1,41 @@
+.app-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.app-title-large {
+  gap: 10px;
+}
+
+.pokeball-icon {
+  position: relative;
+  width: 28px;
+  height: 28px;
+  flex: 0 0 auto;
+  border: 2px solid var(--ion-color-dark);
+  border-radius: 50%;
+  background: linear-gradient(
+    to bottom,
+    var(--ion-color-danger) 0 47%,
+    var(--ion-color-dark) 47% 53%,
+    var(--ion-color-light) 53% 100%
+  );
+}
+
+.pokeball-icon::after {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 9px;
+  height: 9px;
+  border: 2px solid var(--ion-color-dark);
+  border-radius: 50%;
+  background: var(--ion-color-light);
+  content: '';
+  transform: translate(-50%, -50%);
+}
+
 .content-wrapper {
   width: 100%;
   max-width: 960px;
