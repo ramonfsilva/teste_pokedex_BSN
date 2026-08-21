@@ -1,4 +1,4 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import {
   IonButton,
@@ -43,6 +43,8 @@ import { PokemonService } from '../services/pokemon.service';
   ],
 })
 export class HomePage implements OnInit {
+  @ViewChild('content') private readonly content?: IonContent;
+
   protected readonly pokemons = signal<Pokemon[]>([]);
   protected readonly isLoading = signal(true);
   protected readonly errorMessage = signal<string | null>(null);
@@ -69,6 +71,7 @@ export class HomePage implements OnInit {
         this.totalPokemon.set(pokemonPage.count);
         this.currentOffset.set(pokemonPage.results.length);
         this.isLoading.set(false);
+        this.fillScrollableAreaIfNeeded();
       },
       error: () => {
         this.errorMessage.set('Unable to load Pokemon. Please try again later.');
@@ -83,6 +86,21 @@ export class HomePage implements OnInit {
       return;
     }
 
+    this.loadNextPokemonPage(() => event.target.complete());
+  }
+
+  protected toggleFavorite(event: Event, pokemonId: number): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.favoritesService.toggle(pokemonId);
+  }
+
+  private loadNextPokemonPage(onComplete?: () => void, checkScrollable = false): void {
+    if (this.isLoadingMore() || !this.hasMorePokemon()) {
+      onComplete?.();
+      return;
+    }
+
     this.isLoadingMore.set(true);
     this.errorMessage.set(null);
 
@@ -92,19 +110,30 @@ export class HomePage implements OnInit {
         this.totalPokemon.set(pokemonPage.count);
         this.currentOffset.update((offset) => offset + pokemonPage.results.length);
         this.isLoadingMore.set(false);
-        event.target.complete();
+        onComplete?.();
+
+        if (checkScrollable && pokemonPage.results.length > 0) {
+          this.fillScrollableAreaIfNeeded();
+        }
       },
       error: () => {
-        this.errorMessage.set('Unable to load more Pokemon. Please try again later.');
         this.isLoadingMore.set(false);
-        event.target.complete();
+        onComplete?.();
       },
     });
   }
 
-  protected toggleFavorite(event: Event, pokemonId: number): void {
-    event.preventDefault();
-    event.stopPropagation();
-    this.favoritesService.toggle(pokemonId);
+  private fillScrollableAreaIfNeeded(): void {
+    requestAnimationFrame(async () => {
+      const scrollElement = await this.content?.getScrollElement();
+
+      if (!scrollElement || this.isLoadingMore() || !this.hasMorePokemon()) {
+        return;
+      }
+
+      if (scrollElement.scrollHeight <= scrollElement.clientHeight) {
+        this.loadNextPokemonPage(undefined, true);
+      }
+    });
   }
 }
