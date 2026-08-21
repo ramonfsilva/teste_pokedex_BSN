@@ -1,4 +1,7 @@
 .content-wrapper {
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
   padding: 16px;
 }
 
@@ -12,6 +15,7 @@
 
 .pokemon-list {
   display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(136px, 1fr));
   gap: 12px;
 }
 
@@ -20,9 +24,13 @@
   cursor: pointer;
 
   ion-card-content {
-    display: flex;
-    align-items: center;
-    gap: 16px;
+    position: relative;
+    display: grid;
+    gap: 8px;
+    justify-items: center;
+    min-height: 154px;
+    padding: 16px 12px 12px;
+    text-align: center;
   }
 
   ion-img {
@@ -31,14 +39,34 @@
   }
 
   h2 {
-    flex: 1;
     margin: 0;
     font-size: 1.1rem;
     font-weight: 700;
+    overflow-wrap: anywhere;
     text-transform: capitalize;
   }
 
   .favorite-button {
-    margin-left: auto;
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    min-width: 40px;
+    min-height: 40px;
+  }
+}
+
+@media (min-width: 600px) {
+  .content-wrapper {
+    padding: 24px;
+  }
+
+  .pokemon-list {
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 16px;
+  }
+
+  .pokemon-card ion-img {
+    width: 88px;
+    height: 88px;
   }
 }

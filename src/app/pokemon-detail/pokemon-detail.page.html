@@ -53,50 +53,52 @@
         </ion-card-content>
       </ion-card>
 
-      <ion-list inset="true">
-        <ion-item>
-          <ion-label>Height</ion-label>
-          <ion-text slot="end">{{ selectedPokemon.height }}</ion-text>
-        </ion-item>
-        <ion-item>
-          <ion-label>Weight</ion-label>
-          <ion-text slot="end">{{ selectedPokemon.weight }}</ion-text>
-        </ion-item>
-        <ion-item>
-          <ion-label>Base experience</ion-label>
-          <ion-text slot="end">{{ selectedPokemon.baseExperience }}</ion-text>
-        </ion-item>
-      </ion-list>
+      <div class="detail-grid">
+        <ion-list inset="true">
+          <ion-item>
+            <ion-label>Height</ion-label>
+            <ion-text slot="end">{{ selectedPokemon.height }}</ion-text>
+          </ion-item>
+          <ion-item>
+            <ion-label>Weight</ion-label>
+            <ion-text slot="end">{{ selectedPokemon.weight }}</ion-text>
+          </ion-item>
+          <ion-item>
+            <ion-label>Base experience</ion-label>
+            <ion-text slot="end">{{ selectedPokemon.baseExperience }}</ion-text>
+          </ion-item>
+        </ion-list>
 
-      <ion-card>
-        <ion-card-content>
-          <h2>Abilities</h2>
-          <div class="chip-list">
-            @for (ability of selectedPokemon.abilities; track ability) {
-              <ion-badge color="medium">{{ ability }}</ion-badge>
-            }
-          </div>
-        </ion-card-content>
-      </ion-card>
+        <ion-card>
+          <ion-card-content>
+            <h2>Abilities</h2>
+            <div class="chip-list">
+              @for (ability of selectedPokemon.abilities; track ability) {
+                <ion-badge color="medium">{{ ability }}</ion-badge>
+              }
+            </div>
+          </ion-card-content>
+        </ion-card>
 
-      <ion-list inset="true">
-        <ion-item>
-          <ion-label>HP</ion-label>
-          <ion-text slot="end">{{ selectedPokemon.hp }}</ion-text>
-        </ion-item>
-        <ion-item>
-          <ion-label>Attack</ion-label>
-          <ion-text slot="end">{{ selectedPokemon.attack }}</ion-text>
-        </ion-item>
-        <ion-item>
-          <ion-label>Defense</ion-label>
-          <ion-text slot="end">{{ selectedPokemon.defense }}</ion-text>
-        </ion-item>
-        <ion-item>
-          <ion-label>Speed</ion-label>
-          <ion-text slot="end">{{ selectedPokemon.speed }}</ion-text>
-        </ion-item>
-      </ion-list>
+        <ion-list inset="true">
+          <ion-item>
+            <ion-label>HP</ion-label>
+            <ion-text slot="end">{{ selectedPokemon.hp }}</ion-text>
+          </ion-item>
+          <ion-item>
+            <ion-label>Attack</ion-label>
+            <ion-text slot="end">{{ selectedPokemon.attack }}</ion-text>
+          </ion-item>
+          <ion-item>
+            <ion-label>Defense</ion-label>
+            <ion-text slot="end">{{ selectedPokemon.defense }}</ion-text>
+          </ion-item>
+          <ion-item>
+            <ion-label>Speed</ion-label>
+            <ion-text slot="end">{{ selectedPokemon.speed }}</ion-text>
+          </ion-item>
+        </ion-list>
+      </div>
     }
   </section>
 </ion-content>
