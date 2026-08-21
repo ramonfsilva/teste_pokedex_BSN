@@ -10,16 +10,26 @@ import {
   IonImg,
   IonInfiniteScroll,
   IonInfiniteScrollContent,
+  IonLabel,
+  IonSegment,
+  IonSegmentButton,
   InfiniteScrollCustomEvent,
+  SegmentCustomEvent,
   IonSpinner,
   IonText,
   IonTitle,
   IonToolbar,
 } from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import { heart, heartOutline } from 'ionicons/icons';
+import { forkJoin } from 'rxjs';
 
+import { PokemonDetail } from '../models/pokemon-detail.model';
 import { Pokemon } from '../models/pokemon.model';
 import { FavoritesService } from '../services/favorites.service';
 import { PokemonService } from '../services/pokemon.service';
+
+type HomeView = 'all' | 'favorites';
 
 @Component({
   selector: 'app-home',
@@ -35,6 +45,9 @@ import { PokemonService } from '../services/pokemon.service';
     IonImg,
     IonInfiniteScroll,
     IonInfiniteScrollContent,
+    IonLabel,
+    IonSegment,
+    IonSegmentButton,
     IonSpinner,
     IonText,
     IonTitle,
@@ -51,11 +64,19 @@ export class HomePage implements OnInit {
   protected readonly totalPokemon = signal(0);
   protected readonly isLoadingMore = signal(false);
   protected readonly hasMorePokemon = computed(() => this.pokemons().length < this.totalPokemon());
+  protected readonly selectedView = signal<HomeView>('all');
+  protected readonly favoritePokemons = signal<Pokemon[]>([]);
+  protected readonly isLoadingFavorites = signal(false);
+  protected readonly favoritesError = signal<string | null>(null);
 
   private readonly pokemonService = inject(PokemonService);
   protected readonly favoritesService = inject(FavoritesService);
   private readonly pageSize = 20;
   private readonly currentOffset = signal(0);
+
+  constructor() {
+    addIcons({ heart, heartOutline });
+  }
 
   ngOnInit(): void {
     this.loadPokemons();
@@ -81,6 +102,11 @@ export class HomePage implements OnInit {
   }
 
   protected loadMorePokemons(event: InfiniteScrollCustomEvent): void {
+    if (this.selectedView() !== 'all') {
+      event.target.complete();
+      return;
+    }
+
     if (this.isLoadingMore() || !this.hasMorePokemon()) {
       event.target.complete();
       return;
@@ -89,10 +115,24 @@ export class HomePage implements OnInit {
     this.loadNextPokemonPage(() => event.target.complete());
   }
 
+  protected selectView(event: SegmentCustomEvent): void {
+    const selectedValue = event.detail.value === 'favorites' ? 'favorites' : 'all';
+
+    this.selectedView.set(selectedValue);
+
+    if (selectedValue === 'favorites') {
+      this.loadFavoritePokemons();
+    }
+  }
+
   protected toggleFavorite(event: Event, pokemonId: number): void {
     event.preventDefault();
     event.stopPropagation();
     this.favoritesService.toggle(pokemonId);
+
+    if (this.selectedView() === 'favorites') {
+      this.favoritePokemons.update((favorites) => favorites.filter((pokemon) => pokemon.id !== pokemonId));
+    }
   }
 
   private loadNextPokemonPage(onComplete?: () => void, checkScrollable = false): void {
@@ -135,5 +175,38 @@ export class HomePage implements OnInit {
         this.loadNextPokemonPage(undefined, true);
       }
     });
+  }
+
+  private loadFavoritePokemons(): void {
+    const favoriteIds = this.favoritesService.favorites();
+
+    this.favoritesError.set(null);
+
+    if (favoriteIds.length === 0) {
+      this.favoritePokemons.set([]);
+      this.isLoadingFavorites.set(false);
+      return;
+    }
+
+    this.isLoadingFavorites.set(true);
+
+    forkJoin(favoriteIds.map((id) => this.pokemonService.getPokemonById(id))).subscribe({
+      next: (favoriteDetails) => {
+        this.favoritePokemons.set(favoriteDetails.map((pokemon) => this.toPokemon(pokemon)));
+        this.isLoadingFavorites.set(false);
+      },
+      error: () => {
+        this.favoritesError.set('Unable to load favorite Pokemon. Please try again later.');
+        this.isLoadingFavorites.set(false);
+      },
+    });
+  }
+
+  private toPokemon(pokemon: PokemonDetail): Pokemon {
+    return {
+      id: pokemon.id,
+      name: pokemon.name,
+      image: pokemon.image,
+    };
   }
 }

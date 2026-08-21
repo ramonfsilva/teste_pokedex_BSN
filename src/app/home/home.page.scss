@@ -43,6 +43,10 @@
   padding: 16px;
 }
 
+ion-segment {
+  margin-bottom: 16px;
+}
+
 .state-message {
   display: grid;
   gap: 12px;
@@ -90,6 +94,12 @@
     right: 4px;
     min-width: 40px;
     min-height: 40px;
+    --padding-start: 0;
+    --padding-end: 0;
+
+    ion-icon {
+      font-size: 22px;
+    }
   }
 }
 

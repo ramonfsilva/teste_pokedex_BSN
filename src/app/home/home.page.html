@@ -22,46 +22,96 @@
   </ion-header>
 
   <section class="content-wrapper">
+    <ion-segment [value]="selectedView()" (ionChange)="selectView($event)">
+      <ion-segment-button value="all">
+        <ion-label>All</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="favorites">
+        <ion-label>Favorites</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+
     @if (isLoading()) {
       <div class="state-message">
         <ion-spinner name="crescent"></ion-spinner>
         <p>Loading Pokemon...</p>
       </div>
     } @else {
-      @if (errorMessage()) {
-        <ion-text color="danger">
-          <p class="state-message">{{ errorMessage() }}</p>
-        </ion-text>
-      }
-
-      <div class="pokemon-list">
-        @for (pokemon of pokemons(); track pokemon.id) {
-          <ion-card class="pokemon-card" [routerLink]="['/pokemon', pokemon.id]" button="true">
-            <ion-card-content>
-              <ion-img [src]="pokemon.image" [alt]="pokemon.name"></ion-img>
-              <h2>{{ pokemon.name }}</h2>
-              <ion-button
-                class="favorite-button"
-                fill="clear"
-                size="small"
-                [attr.aria-label]="favoritesService.isFavorite(pokemon.id) ? 'Remove from favorites' : 'Add to favorites'"
-                (click)="toggleFavorite($event, pokemon.id)"
-              >
-                <ion-icon
-                  slot="icon-only"
-                  [name]="favoritesService.isFavorite(pokemon.id) ? 'heart' : 'heart-outline'"
-                  [color]="favoritesService.isFavorite(pokemon.id) ? 'danger' : 'medium'"
-                ></ion-icon>
-              </ion-button>
-            </ion-card-content>
-          </ion-card>
+      @if (selectedView() === 'all') {
+        @if (errorMessage()) {
+          <ion-text color="danger">
+            <p class="state-message">{{ errorMessage() }}</p>
+          </ion-text>
         }
-      </div>
 
-      <ion-infinite-scroll threshold="100px" [disabled]="!hasMorePokemon()" (ionInfinite)="loadMorePokemons($event)">
-        <ion-infinite-scroll-content loadingSpinner="crescent" loadingText="Loading more Pokemon...">
-        </ion-infinite-scroll-content>
-      </ion-infinite-scroll>
+        <div class="pokemon-list">
+          @for (pokemon of pokemons(); track pokemon.id) {
+            <ion-card class="pokemon-card" [routerLink]="['/pokemon', pokemon.id]" button="true">
+              <ion-card-content>
+                <ion-img [src]="pokemon.image" [alt]="pokemon.name"></ion-img>
+                <h2>{{ pokemon.name }}</h2>
+                <ion-button
+                  class="favorite-button"
+                  fill="clear"
+                  size="small"
+                  [attr.aria-label]="favoritesService.isFavorite(pokemon.id) ? 'Remove from favorites' : 'Add to favorites'"
+                  (click)="toggleFavorite($event, pokemon.id)"
+                >
+                  <ion-icon
+                    slot="icon-only"
+                    [name]="favoritesService.isFavorite(pokemon.id) ? 'heart' : 'heart-outline'"
+                    [color]="favoritesService.isFavorite(pokemon.id) ? 'danger' : 'medium'"
+                  ></ion-icon>
+                </ion-button>
+              </ion-card-content>
+            </ion-card>
+          }
+        </div>
+
+        <ion-infinite-scroll threshold="100px" [disabled]="!hasMorePokemon()" (ionInfinite)="loadMorePokemons($event)">
+          <ion-infinite-scroll-content loadingSpinner="crescent" loadingText="Loading more Pokemon...">
+          </ion-infinite-scroll-content>
+        </ion-infinite-scroll>
+      } @else {
+        @if (isLoadingFavorites()) {
+          <div class="state-message">
+            <ion-spinner name="crescent"></ion-spinner>
+            <p>Loading favorite Pokemon...</p>
+          </div>
+        } @else if (favoritesError()) {
+          <ion-text color="danger">
+            <p class="state-message">{{ favoritesError() }}</p>
+          </ion-text>
+        } @else if (favoritePokemons().length === 0) {
+          <ion-text color="medium">
+            <p class="state-message">No favorite Pokemon yet.</p>
+          </ion-text>
+        } @else {
+          <div class="pokemon-list">
+            @for (pokemon of favoritePokemons(); track pokemon.id) {
+              <ion-card class="pokemon-card" [routerLink]="['/pokemon', pokemon.id]" button="true">
+                <ion-card-content>
+                  <ion-img [src]="pokemon.image" [alt]="pokemon.name"></ion-img>
+                  <h2>{{ pokemon.name }}</h2>
+                  <ion-button
+                    class="favorite-button"
+                    fill="clear"
+                    size="small"
+                    [attr.aria-label]="favoritesService.isFavorite(pokemon.id) ? 'Remove from favorites' : 'Add to favorites'"
+                    (click)="toggleFavorite($event, pokemon.id)"
+                  >
+                    <ion-icon
+                      slot="icon-only"
+                      [name]="favoritesService.isFavorite(pokemon.id) ? 'heart' : 'heart-outline'"
+                      [color]="favoritesService.isFavorite(pokemon.id) ? 'danger' : 'medium'"
+                    ></ion-icon>
+                  </ion-button>
+                </ion-card-content>
+              </ion-card>
+            }
+          </div>
+        }
+      }
     }
   </section>
 </ion-content>
