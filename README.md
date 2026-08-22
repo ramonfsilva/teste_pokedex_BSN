@@ -4,13 +4,32 @@ Aplicação desenvolvida com Ionic e Angular consumindo a PokeAPI como parte de 
 
 ## Funcionalidades
 
-- Listagem de Pokémons com nome e imagem.
+- Listagem de Pokémon com nome e imagem.
+- Busca de Pokémon por nome.
 - Paginação com `limit` e `offset` usando `ion-infinite-scroll`.
 - Tela de detalhes com tipos, altura, peso, experiência base, habilidades e estatísticas.
 - Favoritos com persistência em `localStorage`.
 - Visualização `All` e `Favorites` na Home.
 - Tratamento de loading e erro nas telas principais.
 - Layout responsivo com abordagem mobile-first.
+
+## Demonstração
+
+### Listagem e busca
+
+![Listagem e busca de Pokémon](screenshots/home.png)
+
+### Paginação com infinite scroll
+
+![Paginação com infinite scroll](screenshots/infinite-scroll.gif)
+
+### Favoritos
+
+![Pokémon favoritos](screenshots/favorites.png)
+
+### Detalhes
+
+![Detalhes do Pokémon](screenshots/details.png)
 
 ## Tecnologias
 
@@ -41,6 +60,14 @@ Gere o build de produção:
 ```bash
 npm run build
 ```
+
+### Docker
+
+```bash
+docker compose up --build
+```
+
+A aplicação ficará disponível em `http://localhost:8080`.
 
 ## Testes
 
