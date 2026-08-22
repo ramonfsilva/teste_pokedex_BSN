@@ -4,42 +4,33 @@ Aplicação desenvolvida com Ionic e Angular consumindo a PokeAPI como parte de 
 
 ## Funcionalidades
 
-- Listagem de Pokémon com nome e imagem.
-- Busca de Pokémon por nome.
-- Paginação com `limit` e `offset` usando `ion-infinite-scroll`.
+- Exibição dos Pokémon com nome e imagem na página inicial.
+- Busca de Pokémon pelo nome.
+- Carregamento automático de novos Pokémon conforme o usuário percorre a lista.
 - Tela de detalhes com tipos, altura, peso, experiência base, habilidades e estatísticas.
-- Favoritos com persistência em `localStorage`.
-- Visualização `All` e `Favorites` na Home.
-- Tratamento de loading e erro nas telas principais.
-- Layout responsivo com abordagem mobile-first.
+- Opção de favoritar e desfavoritar Pokémon, mantendo as escolhas salvas mesmo após fechar a aplicação.
+- Navegação entre a listagem completa e os Pokémon favoritos.
+- Mensagens visuais durante o carregamento dos dados e quando ocorre algum erro.
+- Interface responsiva para diferentes tamanhos de tela.
 
 ## Demonstração
 
-### Listagem e busca
+| Listagem e busca | Paginação com infinite scroll |
+| :---: | :---: |
+| <img src="screenshots/home.png" alt="Listagem e busca de Pokémon" width="280"> | <img src="screenshots/infinite-scroll.gif" alt="Paginação com infinite scroll" width="280"> |
+| **Favoritos** | **Detalhes** |
+| <img src="screenshots/favorites.png" alt="Pokémon favoritos" width="280"> | <img src="screenshots/details.png" alt="Detalhes do Pokémon" width="280"> |
 
-![Listagem e busca de Pokémon](screenshots/home.png)
+## Abordagem
 
-### Paginação com infinite scroll
-
-![Paginação com infinite scroll](screenshots/infinite-scroll.gif)
-
-### Favoritos
-
-![Pokémon favoritos](screenshots/favorites.png)
-
-### Detalhes
-
-![Detalhes do Pokémon](screenshots/details.png)
+Comecei pelo fluxo principal de listagem da PokeAPI para garantir primeiro o funcionamento da Home. Mantive o acesso à API concentrado no `PokemonService`, deixando os componentes responsáveis principalmente pelo estado e pela interface. Para as chamadas HTTP utilizei `Observable`, enquanto os Signals ficaram responsáveis pelo estado reativo das telas. Nos templates usei `@if` e `@for`, seguindo a abordagem atual do Angular. A paginação utiliza `limit` e `offset` da PokeAPI com o infinite scroll do Ionic. Os favoritos são controlados pelo `FavoritesService` e persistidos somente pelos IDs no `localStorage`. Quando o mesmo card passou a ser reutilizado nas visualizações `All` e `Favorites`, extraí o `PokemonCardComponent` para evitar duplicação. A interface foi construída seguindo uma abordagem mobile-first, com o layout se reorganizando conforme o espaço disponível.
 
 ## Tecnologias
 
 - Angular
 - Ionic
 - TypeScript
-- RxJS
-- Angular Signals
 - PokeAPI
-- localStorage
 
 ## Como executar
 
@@ -102,7 +93,3 @@ src/app/
 - A paginação usa `limit` e `offset` da PokeAPI junto com `ion-infinite-scroll`.
 - Os favoritos armazenam somente IDs no `localStorage`.
 - O layout segue mobile-first, com grid fluido que se reorganiza conforme a largura disponível, inclusive ao mudar a orientação do dispositivo.
-
-## Abordagem
-
-Comecei pelo fluxo principal de listagem da PokeAPI para garantir primeiro o funcionamento da Home. Mantive o acesso à API concentrado no `PokemonService`, deixando os componentes responsáveis principalmente pelo estado e pela interface. Para as chamadas HTTP utilizei `Observable`, enquanto os Signals ficaram responsáveis pelo estado reativo das telas. Nos templates usei `@if` e `@for`, seguindo a abordagem atual do Angular. A paginação utiliza `limit` e `offset` da PokeAPI com o infinite scroll do Ionic. Os favoritos são controlados pelo `FavoritesService` e persistidos somente pelos IDs no `localStorage`. Quando o mesmo card passou a ser reutilizado nas visualizações `All` e `Favorites`, extraí o `PokemonCardComponent` para evitar duplicação. A interface foi construída seguindo uma abordagem mobile-first, com o layout se reorganizando conforme o espaço disponível.
