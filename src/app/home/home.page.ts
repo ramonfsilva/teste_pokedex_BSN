@@ -63,7 +63,8 @@ export class HomePage implements OnInit {
   protected readonly searchResult = signal<Pokemon | null>(null);
   protected readonly isSearching = signal(false);
   protected readonly searchError = signal<string | null>(null);
-  protected readonly isSearchActive = computed(() => this.searchQuery().length > 0);
+  protected readonly hasSearchExecuted = signal(false);
+  protected readonly isSearchActive = computed(() => this.hasSearchExecuted());
 
   private readonly pokemonService = inject(PokemonService);
   protected readonly favoritesService = inject(FavoritesService);
@@ -124,20 +125,34 @@ export class HomePage implements OnInit {
     }
   }
 
-  protected searchPokemon(event: Event): void {
+  protected updateSearchQuery(event: Event): void {
     const searchEvent = event as CustomEvent<{ value?: string | null }>;
-    const query = this.normalizeSearchQuery(searchEvent.detail.value ?? '');
+    const query = searchEvent.detail.value ?? '';
 
     this.searchQuery.set(query);
     this.searchResult.set(null);
     this.searchError.set(null);
+    this.isSearching.set(false);
+    this.hasSearchExecuted.set(false);
+
+    if (!query.trim()) {
+      this.clearSearch();
+    }
+  }
+
+  protected searchPokemon(): void {
+    const query = this.normalizeSearchQuery(this.searchQuery());
 
     if (!query) {
       this.clearSearch();
       return;
     }
 
+    this.searchQuery.set(query);
+    this.searchResult.set(null);
+    this.searchError.set(null);
     this.isSearching.set(true);
+    this.hasSearchExecuted.set(true);
 
     this.pokemonService.getPokemon(query).subscribe({
       next: (pokemon) => {
@@ -158,6 +173,7 @@ export class HomePage implements OnInit {
     this.searchResult.set(null);
     this.searchError.set(null);
     this.isSearching.set(false);
+    this.hasSearchExecuted.set(false);
   }
 
   protected toggleFavorite(pokemonId: number): void {
