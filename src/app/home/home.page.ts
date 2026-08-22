@@ -1,13 +1,7 @@
 import { Component, computed, inject, OnInit, signal, ViewChild } from '@angular/core';
-import { RouterLink } from '@angular/router';
 import {
-  IonButton,
-  IonCard,
-  IonCardContent,
   IonContent,
   IonHeader,
-  IonIcon,
-  IonImg,
   IonInfiniteScroll,
   IonInfiniteScrollContent,
   IonLabel,
@@ -20,10 +14,9 @@ import {
   IonTitle,
   IonToolbar,
 } from '@ionic/angular/standalone';
-import { addIcons } from 'ionicons';
-import { heart, heartOutline } from 'ionicons/icons';
 import { catchError, forkJoin, of } from 'rxjs';
 
+import { PokemonCardComponent } from '../components/pokemon-card/pokemon-card.component';
 import { PokemonDetail } from '../models/pokemon-detail.model';
 import { Pokemon } from '../models/pokemon.model';
 import { FavoritesService } from '../services/favorites.service';
@@ -36,13 +29,8 @@ type HomeView = 'all' | 'favorites';
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
   imports: [
-    IonButton,
-    IonCard,
-    IonCardContent,
     IonContent,
     IonHeader,
-    IonIcon,
-    IonImg,
     IonInfiniteScroll,
     IonInfiniteScrollContent,
     IonLabel,
@@ -52,7 +40,7 @@ type HomeView = 'all' | 'favorites';
     IonText,
     IonTitle,
     IonToolbar,
-    RouterLink,
+    PokemonCardComponent,
   ],
 })
 export class HomePage implements OnInit {
@@ -73,10 +61,6 @@ export class HomePage implements OnInit {
   protected readonly favoritesService = inject(FavoritesService);
   private readonly pageSize = 20;
   private readonly currentOffset = signal(0);
-
-  constructor() {
-    addIcons({ heart, heartOutline });
-  }
 
   ngOnInit(): void {
     this.loadPokemons();
@@ -131,9 +115,7 @@ export class HomePage implements OnInit {
     }
   }
 
-  protected toggleFavorite(event: Event, pokemonId: number): void {
-    event.preventDefault();
-    event.stopPropagation();
+  protected toggleFavorite(pokemonId: number): void {
     this.favoritesService.toggle(pokemonId);
 
     if (this.selectedView() === 'favorites') {

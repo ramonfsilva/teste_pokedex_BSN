@@ -46,25 +46,11 @@
 
         <div class="pokemon-list">
           @for (pokemon of pokemons(); track pokemon.id) {
-            <ion-card class="pokemon-card" [routerLink]="['/pokemon', pokemon.id]" button="true">
-              <ion-card-content>
-                <ion-img [src]="pokemon.image" [alt]="pokemon.name"></ion-img>
-                <h2>{{ pokemon.name }}</h2>
-                <ion-button
-                  class="favorite-button"
-                  fill="clear"
-                  size="small"
-                  [attr.aria-label]="favoritesService.isFavorite(pokemon.id) ? 'Remove from favorites' : 'Add to favorites'"
-                  (click)="toggleFavorite($event, pokemon.id)"
-                >
-                  <ion-icon
-                    slot="icon-only"
-                    [name]="favoritesService.isFavorite(pokemon.id) ? 'heart' : 'heart-outline'"
-                    [color]="favoritesService.isFavorite(pokemon.id) ? 'danger' : 'medium'"
-                  ></ion-icon>
-                </ion-button>
-              </ion-card-content>
-            </ion-card>
+            <app-pokemon-card
+              [pokemon]="pokemon"
+              [isFavorite]="favoritesService.isFavorite(pokemon.id)"
+              (favoriteToggle)="toggleFavorite($event)"
+            />
           }
         </div>
 
@@ -89,25 +75,11 @@
         } @else {
           <div class="pokemon-list">
             @for (pokemon of favoritePokemons(); track pokemon.id) {
-              <ion-card class="pokemon-card" [routerLink]="['/pokemon', pokemon.id]" button="true">
-                <ion-card-content>
-                  <ion-img [src]="pokemon.image" [alt]="pokemon.name"></ion-img>
-                  <h2>{{ pokemon.name }}</h2>
-                  <ion-button
-                    class="favorite-button"
-                    fill="clear"
-                    size="small"
-                    [attr.aria-label]="favoritesService.isFavorite(pokemon.id) ? 'Remove from favorites' : 'Add to favorites'"
-                    (click)="toggleFavorite($event, pokemon.id)"
-                  >
-                    <ion-icon
-                      slot="icon-only"
-                      [name]="favoritesService.isFavorite(pokemon.id) ? 'heart' : 'heart-outline'"
-                      [color]="favoritesService.isFavorite(pokemon.id) ? 'danger' : 'medium'"
-                    ></ion-icon>
-                  </ion-button>
-                </ion-card-content>
-              </ion-card>
+              <app-pokemon-card
+                [pokemon]="pokemon"
+                [isFavorite]="favoritesService.isFavorite(pokemon.id)"
+                (favoriteToggle)="toggleFavorite($event)"
+              />
             }
           </div>
         }
