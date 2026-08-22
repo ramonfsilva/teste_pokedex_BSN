@@ -22,7 +22,7 @@ import {
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { heart, heartOutline } from 'ionicons/icons';
-import { forkJoin } from 'rxjs';
+import { catchError, forkJoin, of } from 'rxjs';
 
 import { PokemonDetail } from '../models/pokemon-detail.model';
 import { Pokemon } from '../models/pokemon.model';
@@ -80,6 +80,12 @@ export class HomePage implements OnInit {
 
   ngOnInit(): void {
     this.loadPokemons();
+  }
+
+  ionViewWillEnter(): void {
+    if (this.selectedView() === 'favorites') {
+      this.loadFavoritePokemons();
+    }
   }
 
   private loadPokemons(): void {
@@ -190,9 +196,16 @@ export class HomePage implements OnInit {
 
     this.isLoadingFavorites.set(true);
 
-    forkJoin(favoriteIds.map((id) => this.pokemonService.getPokemonById(id))).subscribe({
+    forkJoin(favoriteIds.map((id) => this.pokemonService.getPokemonById(id).pipe(
+      catchError(() => of(null)),
+    ))).subscribe({
       next: (favoriteDetails) => {
-        this.favoritePokemons.set(favoriteDetails.map((pokemon) => this.toPokemon(pokemon)));
+        const loadedFavorites = favoriteDetails
+          .filter((pokemon): pokemon is PokemonDetail => pokemon !== null)
+          .map((pokemon) => this.toPokemon(pokemon));
+
+        this.favoritePokemons.set(loadedFavorites);
+        this.favoritesError.set(loadedFavorites.length === 0 ? 'Unable to load favorite Pokemon. Please try again later.' : null);
         this.isLoadingFavorites.set(false);
       },
       error: () => {
