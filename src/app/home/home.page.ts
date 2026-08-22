@@ -1,10 +1,12 @@
 import { Component, computed, inject, OnInit, signal, ViewChild } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import {
   IonContent,
   IonHeader,
   IonInfiniteScroll,
   IonInfiniteScrollContent,
   IonLabel,
+  IonSearchbar,
   IonSegment,
   IonSegmentButton,
   InfiniteScrollCustomEvent,
@@ -34,6 +36,7 @@ type HomeView = 'all' | 'favorites';
     IonInfiniteScroll,
     IonInfiniteScrollContent,
     IonLabel,
+    IonSearchbar,
     IonSegment,
     IonSegmentButton,
     IonSpinner,
@@ -56,6 +59,11 @@ export class HomePage implements OnInit {
   protected readonly favoritePokemons = signal<Pokemon[]>([]);
   protected readonly isLoadingFavorites = signal(false);
   protected readonly favoritesError = signal<string | null>(null);
+  protected readonly searchQuery = signal('');
+  protected readonly searchResult = signal<Pokemon | null>(null);
+  protected readonly isSearching = signal(false);
+  protected readonly searchError = signal<string | null>(null);
+  protected readonly isSearchActive = computed(() => this.searchQuery().length > 0);
 
   private readonly pokemonService = inject(PokemonService);
   protected readonly favoritesService = inject(FavoritesService);
@@ -92,7 +100,7 @@ export class HomePage implements OnInit {
   }
 
   protected loadMorePokemons(event: InfiniteScrollCustomEvent): void {
-    if (this.selectedView() !== 'all') {
+    if (this.selectedView() !== 'all' || this.isSearchActive()) {
       event.target.complete();
       return;
     }
@@ -111,8 +119,45 @@ export class HomePage implements OnInit {
     this.selectedView.set(selectedValue);
 
     if (selectedValue === 'favorites') {
+      this.clearSearch();
       this.loadFavoritePokemons();
     }
+  }
+
+  protected searchPokemon(event: Event): void {
+    const searchEvent = event as CustomEvent<{ value?: string | null }>;
+    const query = this.normalizeSearchQuery(searchEvent.detail.value ?? '');
+
+    this.searchQuery.set(query);
+    this.searchResult.set(null);
+    this.searchError.set(null);
+
+    if (!query) {
+      this.clearSearch();
+      return;
+    }
+
+    this.isSearching.set(true);
+
+    this.pokemonService.getPokemon(query).subscribe({
+      next: (pokemon) => {
+        this.searchResult.set(this.toPokemon(pokemon));
+        this.isSearching.set(false);
+      },
+      error: (error: unknown) => {
+        this.searchError.set(error instanceof HttpErrorResponse && error.status === 404
+          ? 'No Pokemon found.'
+          : 'Unable to search Pokemon. Please try again later.');
+        this.isSearching.set(false);
+      },
+    });
+  }
+
+  protected clearSearch(): void {
+    this.searchQuery.set('');
+    this.searchResult.set(null);
+    this.searchError.set(null);
+    this.isSearching.set(false);
   }
 
   protected toggleFavorite(pokemonId: number): void {
@@ -203,5 +248,9 @@ export class HomePage implements OnInit {
       name: pokemon.name,
       image: pokemon.image,
     };
+  }
+
+  private normalizeSearchQuery(value: string): string {
+    return value.trim().toLowerCase();
   }
 }
