@@ -39,7 +39,7 @@
     } @else {
       @if (selectedView() === 'all') {
         <ion-searchbar
-          placeholder="Search Pokémon by name or ID"
+          placeholder="Search Pokémon by name"
           [value]="searchQuery()"
           (ionInput)="updateSearchQuery($event)"
           (ionChange)="searchPokemon()"

@@ -148,6 +148,15 @@ export class HomePage implements OnInit {
       return;
     }
 
+    if (/^\d+$/.test(query)) {
+      this.searchQuery.set(query);
+      this.searchResult.set(null);
+      this.searchError.set('Search by Pokémon name.');
+      this.isSearching.set(false);
+      this.hasSearchExecuted.set(true);
+      return;
+    }
+
     this.searchQuery.set(query);
     this.searchResult.set(null);
     this.searchError.set(null);
