@@ -1,0 +1,19 @@
+<ion-card class="pokemon-card" [routerLink]="['/pokemon', pokemon().id]" button="true">
+  <ion-card-content>
+    <ion-img [src]="pokemon().image" [alt]="pokemon().name"></ion-img>
+    <h2>{{ pokemon().name }}</h2>
+    <ion-button
+      class="favorite-button"
+      fill="clear"
+      size="small"
+      [attr.aria-label]="isFavorite() ? 'Remove from favorites' : 'Add to favorites'"
+      (click)="toggleFavorite($event)"
+    >
+      <ion-icon
+        slot="icon-only"
+        [name]="isFavorite() ? 'heart' : 'heart-outline'"
+        [color]="isFavorite() ? 'danger' : 'medium'"
+      ></ion-icon>
+    </ion-button>
+  </ion-card-content>
+</ion-card>
