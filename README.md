@@ -35,6 +35,13 @@ Comecei pelo fluxo principal de listagem da PokeAPI para garantir primeiro o fun
 
 ## Como executar
 
+Clone o repositório e acesse a pasta do projeto:
+
+```bash
+git clone https://github.com/ramonfsilva/teste_pokedex_BSN.git
+cd teste_pokedex_BSN
+```
+
 Instale as dependências:
 
 ```bash
@@ -47,6 +54,8 @@ Execute a aplicação em modo de desenvolvimento:
 npm start
 ```
 
+A aplicação estará disponível em `http://localhost:4200`.
+
 Gere o build de produção:
 
 ```bash
@@ -55,11 +64,13 @@ npm run build
 
 ### Docker
 
+Execute a aplicação com Docker Compose:
+
 ```bash
 docker compose up --build
 ```
 
-A aplicação ficará disponível em `http://localhost:8080`.
+A aplicação estará disponível em `http://localhost:8080`.
 
 ## Testes
 
@@ -94,3 +105,9 @@ src/app/
 - A paginação usa `limit` e `offset` da PokeAPI junto com `ion-infinite-scroll`.
 - Os favoritos armazenam somente IDs no `localStorage`.
 - O layout segue mobile-first, com grid fluido que se reorganiza conforme a largura disponível, inclusive ao mudar a orientação do dispositivo.
+
+## Agradecimento
+
+Agradeço pela oportunidade de participar deste processo seletivo e desenvolver este projeto. Fico à disposição para esclarecer dúvidas e conversar sobre as decisões adotadas durante a implementação.
+
+**Contato:** [ramonfransa@gmail.com](mailto:ramonfransa@gmail.com)
