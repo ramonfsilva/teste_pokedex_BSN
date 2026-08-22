@@ -38,26 +38,55 @@
       </div>
     } @else {
       @if (selectedView() === 'all') {
+        <ion-searchbar
+          placeholder="Search Pokémon by name or ID"
+          [value]="searchQuery()"
+          (ionInput)="updateSearchQuery($event)"
+          (ionChange)="searchPokemon()"
+          (ionClear)="clearSearch()"
+        ></ion-searchbar>
+
         @if (errorMessage()) {
           <ion-text color="danger">
             <p class="state-message">{{ errorMessage() }}</p>
           </ion-text>
         }
 
-        <div class="pokemon-list">
-          @for (pokemon of pokemons(); track pokemon.id) {
+        @if (isSearching()) {
+          <div class="state-message">
+            <ion-spinner name="crescent"></ion-spinner>
+            <p>Searching Pokemon...</p>
+          </div>
+        } @else if (searchError()) {
+          <ion-text color="medium">
+            <p class="state-message">{{ searchError() }}</p>
+          </ion-text>
+        } @else if (searchResult(); as pokemon) {
+          <div class="pokemon-list">
             <app-pokemon-card
               [pokemon]="pokemon"
               [isFavorite]="favoritesService.isFavorite(pokemon.id)"
               (favoriteToggle)="toggleFavorite($event)"
             />
-          }
-        </div>
+          </div>
+        } @else {
+          <div class="pokemon-list">
+            @for (pokemon of pokemons(); track pokemon.id) {
+              <app-pokemon-card
+                [pokemon]="pokemon"
+                [isFavorite]="favoritesService.isFavorite(pokemon.id)"
+                (favoriteToggle)="toggleFavorite($event)"
+              />
+            }
+          </div>
+        }
 
-        <ion-infinite-scroll threshold="100px" [disabled]="!hasMorePokemon()" (ionInfinite)="loadMorePokemons($event)">
-          <ion-infinite-scroll-content loadingSpinner="crescent" loadingText="Loading more Pokemon...">
-          </ion-infinite-scroll-content>
-        </ion-infinite-scroll>
+        @if (!isSearchActive()) {
+          <ion-infinite-scroll threshold="100px" [disabled]="!hasMorePokemon()" (ionInfinite)="loadMorePokemons($event)">
+            <ion-infinite-scroll-content loadingSpinner="crescent" loadingText="Loading more Pokemon...">
+            </ion-infinite-scroll-content>
+          </ion-infinite-scroll>
+        }
       } @else {
         @if (isLoadingFavorites()) {
           <div class="state-message">
