@@ -15,11 +15,12 @@ Aplicação desenvolvida com Ionic e Angular consumindo a PokeAPI como parte de 
 
 ## Demonstração
 
-| Listagem e busca | Paginação com infinite scroll |
-| :---: | :---: |
-| <img src="screenshots/home.png" alt="Listagem e busca de Pokémon" width="280"> | <img src="screenshots/infinite-scroll.gif" alt="Paginação com infinite scroll" width="280"> |
-| **Favoritos** | **Detalhes** |
-| <img src="screenshots/favorites.png" alt="Pokémon favoritos" width="280"> | <img src="screenshots/details.png" alt="Detalhes do Pokémon" width="280"> |
+<p align="center">
+  <img src="screenshots/home.png" alt="Página inicial" width="160">
+  <img src="screenshots/infinite-scroll.gif" alt="Paginação com infinite scroll" width="160">
+  <img src="screenshots/details.png" alt="Detalhes do Pokémon" width="160">
+  <img src="screenshots/favorites.png" alt="Pokémon favoritos" width="160">
+</p>
 
 ## Abordagem
 
